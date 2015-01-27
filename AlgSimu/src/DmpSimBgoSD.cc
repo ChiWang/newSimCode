@@ -4,6 +4,8 @@
  *    Chi WANG (chiwang@mail.ustc.edu.cn) 03/03/2014
 */
 
+#include <stdlib.h>     // getenv()
+
 #include "G4Step.hh"
 #include "G4TouchableHistory.hh"
 
@@ -85,9 +87,9 @@ DmpSimBgoSD::DmpSimBgoSD()
     
   }
   fEvtMCBgo = new DmpEvtBgoHits();
-  gDataBuffer->RegisterObject("Event/MCTruth/Bgo",fEvtMCBgo,"DmpEvtBgoHits");
+  gDataBuffer->RegisterObject("Event/MCTruth/Bgo",fEvtMCBgo);
   fDigitBgo = new DmpEvtBgoHits();
-  gDataBuffer->RegisterObject("Event/MCTruth/BgoFDigit",fDigitBgo,"DmpEvtBgoHits");
+  gDataBuffer->RegisterObject("Event/Digit/Bgo",fDigitBgo);
 }
 
 //-------------------------------------------------------------------
@@ -147,8 +149,9 @@ void DmpSimBgoSD::AddThisG4Hit(const short &id,const double &e,const G4ThreeVect
 void DmpSimBgoSD::GetAttPar(){
 
   //Get Attenuation coefficients 
+  G4String attFile = (G4String)getenv("DMPSWWORK")+"/share/Simulation/DmpSimAtt.par";
   ifstream Apar;
-  Apar.open("../CaliParameter/Attenuation/AttPar");
+  Apar.open(attFile);
    if(!Apar.good()){
     std::cout<<"Can not open Att Par file!"<<std::endl;
     exit(1);
@@ -167,8 +170,9 @@ void DmpSimBgoSD::GetAttPar(){
 void DmpSimBgoSD::GetMipPar(){
 
   //Get MIPs parameters
+  G4String MipsFile = (G4String)getenv("DMPSWWORK")+"/share/Simulation/DmpSimMips.par";
   ifstream Mpar;
-  Mpar.open("../CaliParameter/MIPs/MIPsPar");
+  Mpar.open(MipsFile);
   if(!Mpar.good()){
     std::cout<<"Can not open MIPs Par file!"<<std::endl;
     exit(1);

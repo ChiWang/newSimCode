@@ -15,7 +15,7 @@ class G4GDMLParser;
 //class DmpSimStkSD;
 class DmpSimBgoSD;
 //class DmpSimNudSD;
-class DmpMetadata;
+//class DmpMetadata;
 
 class DmpSimDetector : public G4VUserDetectorConstruction{
 /*
@@ -30,7 +30,7 @@ public:
 private:
   void SetAncillarySD();
   void Adjustment()const;
-  void AddPhotonGenerator()const;
+  //void AddPhotonGenerator()const;
   void ResetMagnetic(const double &x,const double &y,const double &z)const;    // for BT
 
 private:
@@ -43,8 +43,8 @@ private:
   DmpSimBgoSD       *fBgoSD;
 //  DmpSimNudSD       *fNudSD;
 
-private:
-  DmpMetadata       *fMetadata;
+//private:
+//  DmpMetadata       *fMetadata;
 
 };
 

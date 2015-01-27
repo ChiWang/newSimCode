@@ -1,6 +1,6 @@
 #! /usr/bin/python
 '''
- *  $Id: JobOpt_DmpSim, 2014-10-12 02:08:54 DAMPE $
+ *  $Id: JobOpt_DmpSim, 2015-01-27 11:22:06 DAMPE $
  *  Author(s):
  *    Chi WANG (chiwang@mail.ustc.edu.cn) 07/03/2014
  *-----------------------------------------------------
@@ -14,14 +14,14 @@ import libDmpSimAlg as  DmpSim     # Load your lib.
 
 #-------------------------------------------------------------------
 # Global setting
-DMPSW.Core.Set("EventNumber","100")     # MUST event number for simulation!!!
+DMPSW.Core.SetEventNumber(20)     # MUST event number for simulation!!!
 #DMPSW.Core.Set("StartTime","20130101-0000")     # if NOT set, start from launch time
 #DMPSW.Core.Set("StopTime","20160101-0000")      # if NOT set, end at 2113.01.01
 #DMPSW.Core.Set("LogLevel","Debug")      # Value = {Error | Warning | Info | Debug}. If NOT set, will use Info.
 
 #-------------------------------------------------------------------
 # RootIOSvc options
-DMPSW.RootIOSvc.Set("Output/WriteList","Event/MCTruth;Metadata/MCTruth")  # split by ;
+DMPSW.RootIOSvc.SetWriteList("Event/MCTruth;Event/Digit")  # split by ;
 
 #-------------------------------------------------------------------
 # Creat user's service or algorithm
@@ -38,11 +38,11 @@ simAlg.Set("Gdml",DMPSW.WorkPath+"/share/Geometry/BTOctober2014/DAMPE_PS.gdml") 
 #simAlg.Set("BT/DAMPE/Translation","-13.75 -13.75 0")  # uint: mm. default is "0 0 0"
 simAlg.Set("BT/PbGlass/Delete","yes")
 
-simAlg.Set("BT/PhotonGenerator/Material","G4_W") # g4 material, default is G4_Pb
+#simAlg.Set("BT/PhotonGenerator/Material","G4_W") # g4 material, default is G4_Pb
 #simAlg.Set("BT/PhotonGenerator/Size","500 500 10")  # unit: mm, reset default size(200 200 0.5) mm
 #simAlg.Set("BT/PhotonGenerator/Thickness","10")  # unit: mm, just reset the default thickness(0.5)
 #simAlg.Set("BT/PhotonGenerator/Position","-300.0 0 -8000")  # unit: mm, reset default position(-300 0 -8000)
-simAlg.Set("BT/PhotonGenerator/Offset","10")  # unit: mm, an offset to the default position_z(-8000)
+#simAlg.Set("BT/PhotonGenerator/Offset","10")  # unit: mm, an offset to the default position_z(-8000)
 #-------------------------------------------------------------------
 # Set gps   Warning: NEVER use "gps/direction" and "gps/centre" in job option
 #simAlg.Set("gps/centre","0 0 20000 mm")
@@ -51,7 +51,7 @@ simAlg.Set("gps/particle","e-")   # default is mu-, 1MeV
 #simAlg.Set("gps/pos/shape","circle")
 #simAlg.Set("gps/pos/radius","0.5 cm")
 #simAlg.Set("gps/ene/type","Mono")
-simAlg.Set("gps/energy","2 GeV")
+simAlg.Set("gps/energy","0.5 GeV")
 #simAlg.Set("gps/ene/mono","2. GeV")
 #simAlg.Set("gps/ene/min","50. MeV")
 #simAlg.Set("gps/ene/max","50. MeV")
@@ -60,7 +60,7 @@ simAlg.Set("gps/energy","2 GeV")
 # Append user's service or algorithm into Kernel
 DMPSW.AlgMgr.Append(simAlg)
 
-DMPSW.RootIOSvc.Set("Output/FileName","./testDmpSim0_2GeV_100_e-.root")   # if NOT set, will use DmpSim_Seed-sim.root
+DMPSW.RootIOSvc.SetOutputFile("./DmpSim_0.5GeV_2000_e-.root")   # if NOT set, will use DmpSim_Seed-sim.root
 #-------------------------------------------------------------------
 # Run job
 DMPSW.Core.Initialize()

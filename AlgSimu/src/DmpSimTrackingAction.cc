@@ -1,5 +1,5 @@
 /*
- *  $Id: DmpSimTrackingAction.cc, 2014-05-14 15:35:24 DAMPE $
+ *  $Id: DmpSimTrackingAction.cc, 2015-01-27 11:48:12 DAMPE $
  *  Author(s):
  *    Chi WANG (chiwang@mail.ustc.edu.cn) 04/03/2014
 */
@@ -14,7 +14,7 @@
 //-------------------------------------------------------------------
 DmpSimTrackingAction::DmpSimTrackingAction():fTrackInfor(0){
   fTrackInfor = new DmpEvtMCTrack();
-  gDataBuffer->RegisterObject("Event/MCTruth/TrackVertex",fTrackInfor,"DmpEvtMCTrack");
+  gDataBuffer->RegisterObject("Event/MCTruth/TrackVertex",fTrackInfor);
 }
 
 //-------------------------------------------------------------------

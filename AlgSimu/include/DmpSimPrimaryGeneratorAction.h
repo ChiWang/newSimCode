@@ -11,7 +11,7 @@
 
 class G4GeneralParticleSource;
 class DmpEvtMCPrimaryParticle;
-class DmpMetadata;
+//class DmpMetadata;
 
 class DmpSimPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction{
 public:
@@ -32,7 +32,7 @@ private:
 private:
   G4ThreeVector fDirection;     // direction of particle source
   G4ThreeVector fCentre;        // centre of particle source, unit mm
-  DmpMetadata   *fMetadata;     // 
+  //DmpMetadata   *fMetadata;     // 
 
 };
 

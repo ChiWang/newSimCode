@@ -10,21 +10,21 @@
 #include "DmpSimPrimaryGeneratorAction.h"
 #include "DmpEvtMCPrimaryParticle.h"
 #include "DmpDataBuffer.h"
-#include "DmpMetadata.h"
+//#include "DmpMetadata.h"
 
 DmpSimPrimaryGeneratorAction::DmpSimPrimaryGeneratorAction()
  :fPrimaryParticle(0),
-  fGPS(0),
-  fMetadata(0)
+  fGPS(0)
+  //fMetadata(0)
 {
-  fMetadata = dynamic_cast<DmpMetadata*>(gDataBuffer->ReadObject("Metadata/MCTruth/JobOpt"));
+  //fMetadata = dynamic_cast<DmpMetadata*>(gDataBuffer->ReadObject("Metadata/MCTruth/JobOpt"));
   double tmp[3]={0,0,0};
-  std::istringstream iss_dir(fMetadata->GetValue("gps/direction"));
+  std::istringstream iss_dir(gRootIOSvc->JobOption()->GetValue("gps/direction"));
   iss_dir>>tmp[0]>>tmp[1]>>tmp[2];
   fDirection.setX(tmp[0]);
   fDirection.setY(tmp[1]);
   fDirection.setZ(tmp[2]);
-  std::istringstream iss_cen(fMetadata->GetValue("gps/centre"));
+  std::istringstream iss_cen(gRootIOSvc->JobOption()->GetValue("gps/centre"));
   std::string unit="cm";
   iss_cen>>tmp[0]>>tmp[1]>>tmp[2]>>unit;
   fCentre.setX(tmp[0]);
@@ -36,7 +36,7 @@ DmpSimPrimaryGeneratorAction::DmpSimPrimaryGeneratorAction()
     fCentre *=100;
   }
   fPrimaryParticle = new DmpEvtMCPrimaryParticle();
-  gDataBuffer->RegisterObject("Event/MCTruth/PrimaryParticle",fPrimaryParticle,"DmpEvtMCPrimaryParticle");
+  gDataBuffer->RegisterObject("Event/MCTruth/PrimaryParticle",fPrimaryParticle);
   fGPS = new G4GeneralParticleSource();
 }
 
@@ -48,28 +48,28 @@ DmpSimPrimaryGeneratorAction::~DmpSimPrimaryGeneratorAction(){
 //-------------------------------------------------------------------
 void DmpSimPrimaryGeneratorAction::ApplyGPSCommand(){
   G4UImanager *uiMgr = G4UImanager::GetUIpointer();
-  short nCmd = fMetadata->OptionSize();
+  short nCmd = gRootIOSvc->JobOption()->OptionSize();
   for(short i =0; i<nCmd;++i){
-    std::string command = fMetadata->GetCommand(i);
+    std::string command = gRootIOSvc->JobOption()->GetCommand(i);
 DmpLogDebug<<"\t"<<command<<std::endl;
     if(command == "BT/DAMPE/Rotation"){
 DmpLogDebug<<"\t"<<command<<std::endl;
       double rad = 0;
-      std::istringstream iss(fMetadata->GetValue(command));
+      std::istringstream iss(gRootIOSvc->JobOption()->GetValue(command));
       iss>>rad;
       rad = rad / 180 * 3.141592653;
       AdjustmentRotation(rad);
     }else if(command == "BT/DAMPE/Translation"){
 DmpLogDebug<<"\t"<<command<<std::endl;
       double tmp[3]={0,0,0};
-      std::istringstream iss(fMetadata->GetValue(command));
+      std::istringstream iss(gRootIOSvc->JobOption()->GetValue(command));
       iss>>tmp[0]>>tmp[1]>>tmp[2];
       AdjustmentTranslation(G4ThreeVector(tmp[0],tmp[1],tmp[2]));
     }
   }
   for(short i =0; i<nCmd;++i){// must after adjustment
-    if(fMetadata->GetCommand(i).find("gps/") != std::string::npos){
-      std::string cmd = "/" + fMetadata->GetCommand(i) + " " + fMetadata->GetValue(i);
+    if(gRootIOSvc->JobOption()->GetCommand(i).find("gps/") != std::string::npos){
+      std::string cmd = "/" + gRootIOSvc->JobOption()->GetCommand(i) + " " + gRootIOSvc->JobOption()->GetValue(i);
       uiMgr->ApplyCommand(cmd);
     }
   }
@@ -103,13 +103,13 @@ void DmpSimPrimaryGeneratorAction::AdjustmentRotation(const double &rad){
   std::ostringstream oss;
   oss<<fDirection.x()<<" "<<fDirection.y()<<" "<<fDirection.z();
 DmpLogDebug<<oss.str()<<std::endl;
-  fMetadata->SetOption("gps/direction",oss.str());
+  gRootIOSvc->JobOption()->SetOption("gps/direction",oss.str());
 
   fCentre.rotateY(rad);
   std::ostringstream oss_1;
   oss_1<<fCentre.x()<<" "<<fCentre.y()<<" "<<fCentre.z()<<" mm";
 DmpLogDebug<<oss_1.str()<<std::endl;
-  fMetadata->SetOption("gps/centre",oss_1.str());
+  gRootIOSvc->JobOption()->SetOption("gps/centre",oss_1.str());
 }
 
 //-------------------------------------------------------------------
@@ -118,7 +118,7 @@ void DmpSimPrimaryGeneratorAction::AdjustmentTranslation(const G4ThreeVector &v)
   std::ostringstream oss;
   oss<<fCentre.x()<<" "<<fCentre.y()<<" "<<fCentre.z()<<" mm";
 DmpLogDebug<<oss.str()<<std::endl;
-  fMetadata->SetOption("gps/centre",oss.str());
+  gRootIOSvc->JobOption()->SetOption("gps/centre",oss.str());
 }
 
 

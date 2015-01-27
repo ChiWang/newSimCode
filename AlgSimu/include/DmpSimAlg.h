@@ -1,5 +1,5 @@
 /*
- *  $Id: DmpSimAlg.h, 2014-10-03 22:19:33 DAMPE $
+ *  $Id: DmpSimAlg.h, 2015-01-27 11:57:14 DAMPE $
  *  Author(s):
  *    Chi WANG (chiwang@mail.ustc.edu.cn) 10/06/2014
 */
@@ -9,7 +9,6 @@
 
 #include "DmpVAlg.h"
 
-class DmpMetadata;
 class DmpSimRunManager;
 class DmpSimPrimaryGeneratorAction;
 class DmpSimDetector;
@@ -26,6 +25,11 @@ public:
   DmpSimAlg();
   ~DmpSimAlg();
 
+  bool Initialize();
+  bool ProcessThisEvent();
+  bool Finalize();
+
+public:
   void Set(const std::string &option,const std::string &value);
   /*
    * Options:
@@ -52,13 +56,8 @@ public:
    *    |  |  +--Translation    // deault: "0 0 0"
    *    |  |  +--Rotation       // deault: "0 0 0"
    */
-  bool Initialize();
-  bool ProcessThisEvent();
-  bool Finalize();
-  DmpMetadata* GetMetadata(){return fMetadata;}
 
 private:
-  DmpMetadata           *fMetadata;
   DmpSimRunManager      *fSimRunMgr;    // run manager of simulation
   G4PhysListFactory     *fPhyFactory;
   DmpSimPrimaryGeneratorAction  *fSource;   // particle source

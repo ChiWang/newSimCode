@@ -16,7 +16,7 @@ DmpSimSSD_SD::DmpSimSSD_SD(const std::string &ID)
   fEvtMCSSD(0)
 {
   fEvtMCSSD = new DmpEvtMCSSD();
-  gDataBuffer->RegisterObject("Event/MCTruth/SSD_"+ID,fEvtMCSSD,"DmpEvtMCSSD");
+  gDataBuffer->RegisterObject("Event/MCTruth/SSD_"+ID,fEvtMCSSD);
 }
 
 //-------------------------------------------------------------------

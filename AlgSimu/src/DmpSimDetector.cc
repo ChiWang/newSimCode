@@ -17,7 +17,7 @@
 
 #include "DmpLog.h"
 #include "DmpDataBuffer.h"
-#include "DmpMetadata.h"
+//#include "DmpMetadata.h"
 
 #include "DmpSimDetector.h"
 //#include "DmpSimPsdSD.h"
@@ -39,7 +39,7 @@ DmpSimDetector::DmpSimDetector()
 //  fStkSD = new DmpSimStkSD();
   fBgoSD = new DmpSimBgoSD();
 //  fNudSD = new DmpSimNudSD();
-  fMetadata = dynamic_cast<DmpMetadata*>(gDataBuffer->ReadObject("Metadata/MCTruth/JobOpt"));
+  //fMetadata = dynamic_cast<DmpMetadata*>(gDataBuffer->ReadObject("Metadata/MCTruth/JobOpt"));
 }
 
 //-------------------------------------------------------------------
@@ -54,7 +54,7 @@ DmpSimDetector::~DmpSimDetector(){
 //-------------------------------------------------------------------
 #include <boost/filesystem.hpp>     // path
 G4VPhysicalVolume* DmpSimDetector::Construct(){
-  boost::filesystem::path   gdmlFile=fMetadata->GetValue("Gdml");
+  boost::filesystem::path   gdmlFile=gRootIOSvc->JobOption()->GetValue("Gdml");
   if(gdmlFile.extension().string() != ".gdml"){    // argv = sub-directory
     gdmlFile = (std::string)getenv("DMPSWSYS")+"/share/Geometry/"+gdmlFile.string()+"/DAMPE.gdml";
   }
@@ -66,7 +66,7 @@ G4VPhysicalVolume* DmpSimDetector::Construct(){
   fPhyVolume->GetLogicalVolume()->SetVisAttributes(G4VisAttributes::Invisible);
   chdir(dirTmp);
 
-  AddPhotonGenerator(); // must before adjustment
+  //AddPhotonGenerator(); // must before adjustment
 
   Adjustment();
 
@@ -106,16 +106,16 @@ G4VPhysicalVolume* DmpSimDetector::Construct(){
 
 //-------------------------------------------------------------------
 void DmpSimDetector::Adjustment()const{
-  short nCmd = fMetadata->OptionSize();
+  short nCmd = gRootIOSvc->JobOption()->OptionSize();
   G4VPhysicalVolume *PV = PV = G4PhysicalVolumeStore::GetInstance()->GetVolume("Ancillary_Det_PV",false);
   if(PV){
     PV->GetLogicalVolume()->SetVisAttributes(G4VisAttributes::Invisible);
   }
   for(short i =0; i<nCmd;++i){
-    std::string command = fMetadata->GetCommand(i);
+    std::string command = gRootIOSvc->JobOption()->GetCommand(i);
     if(command == "BT/DAMPE/Rotation"){
       double rad = 0;
-      std::istringstream iss(fMetadata->GetValue(command));
+      std::istringstream iss(gRootIOSvc->JobOption()->GetValue(command));
       iss>>rad;
       rad = rad / 180 * 3.141592653;
       static G4RotationMatrix rot;
@@ -123,7 +123,7 @@ void DmpSimDetector::Adjustment()const{
       PV->SetRotation(&rot);
     }else if(command == "BT/DAMPE/Translation"){
       double x=0,y=0.,z=0.0;
-      std::istringstream iss(fMetadata->GetValue(command));
+      std::istringstream iss(gRootIOSvc->JobOption()->GetValue(command));
       iss>>x>>y>>z;
       G4ThreeVector move(x,y,z);
       G4ThreeVector par = PV->GetTranslation();
@@ -131,7 +131,7 @@ void DmpSimDetector::Adjustment()const{
       PV->SetTranslation(par);
     }else if(command == "BT/Magnetic"){
       double x=0,y=0.,z=0.0;
-      std::istringstream iss(fMetadata->GetValue(command));
+      std::istringstream iss(gRootIOSvc->JobOption()->GetValue(command));
       iss>>x>>y>>z;
       ResetMagnetic(x,y,z);
     }else if(command == "BT/PbGlass/Delete"){
@@ -144,6 +144,7 @@ void DmpSimDetector::Adjustment()const{
 }
 
 //-------------------------------------------------------------------
+/*
 #include "G4NistManager.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4PVPlacement.hh"
@@ -197,6 +198,7 @@ void DmpSimDetector::AddPhotonGenerator()const{
   G4LogicalVolume *photonGeneratorLog = new G4LogicalVolume(photonGeneratorSolid,mat,"PhotonGeneratorLog");
   G4VPhysicalVolume *fPhotonGeneratorPhy = new G4PVPlacement(0,G4ThreeVector(pos_x,pos_y,pos_z),photonGeneratorLog,"PhotonGenerator",ancillaryDet_LV,false,0);
 }
+*/
 
 //-------------------------------------------------------------------
 #include "DmpSimMagneticField.h"

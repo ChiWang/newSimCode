@@ -35,3 +35,16 @@ void VertexOfPhoton(){
   eventTree->Draw("TrackVertex.fDirection.Theta():TrackVertex.fEnergy","(TrackVertex.fPDGCode==22)&&(TrackVertex.fParentID == 1)&&(TrackVertex.fPosition.fZ < -5000)");
 }
 
+void VertexOfPhoton_noParentID(){
+  TCanvas *c1 = new TCanvas("VertexOfPhoton_noParentID","VertexOfPhoton_noParentID");
+  c1->Divide(2,2);
+  c1->cd(1);
+  eventTree->Draw("TrackVertex.fPosition.fZ","(TrackVertex.fPDGCode==22)&&(TrackVertex.fPosition.fZ < -5000)");
+  c1->cd(2);
+  eventTree->Draw("TrackVertex.fDirection.Theta()","(TrackVertex.fPDGCode==22)&&(TrackVertex.fPosition.fZ < -5000)");
+  c1->cd(3);
+  eventTree->Draw("TrackVertex.fEnergy:TrackVertex.fPosition.fZ","(TrackVertex.fPDGCode==22)&&(TrackVertex.fPosition.fZ < -5000)");
+  c1->cd(4);
+  eventTree->Draw("TrackVertex.fDirection.Theta():TrackVertex.fEnergy","(TrackVertex.fPDGCode==22)&&(TrackVertex.fPosition.fZ < -5000)");
+}
+
